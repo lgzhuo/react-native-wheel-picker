@@ -8,9 +8,8 @@ import {
 } from 'react-native';
 
 
-var WheelCurvedPicker = React.createClass ({
-
-	propTypes: {
+class WheelCurvedPicker extends React.Component {
+    static propTypes = {
 		...View.propTypes,
 
 		data: React.PropTypes.array,
@@ -28,24 +27,18 @@ var WheelCurvedPicker = React.createClass ({
 		selectedValue: React.PropTypes.any,
 
 		selectedIndex: React.PropTypes.number,
-	},
+	};
 
-	getDefaultProps(): Object {
-		return {
-			itemStyle : {color:"white", fontSize:26},
-			itemSpace: 20,
-		};
-	},
+    static defaultProps = {
+        itemStyle : {color:"white", fontSize:26},
+        itemSpace: 20,
+    };
 
-	getInitialState: function() {
-		return this._stateFromProps(this.props);
-	},
-
-	componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
 		this.setState(this._stateFromProps(nextProps));
-	},
+	}
 
-	_stateFromProps: function(props) {
+    _stateFromProps = (props) => {
 		var selectedIndex = 0;
 		var items = [];
 		React.Children.forEach(props.children, function (child, index) {
@@ -59,15 +52,21 @@ var WheelCurvedPicker = React.createClass ({
 		var textColor = props.itemStyle.color
 
 		return {selectedIndex, items, textSize, textColor};
-	},
+	};
 
-	_onValueChange: function(e: Event) {
+    _onValueChange = (e: Event) => {
 		if (this.props.onValueChange) {
 			this.props.onValueChange(e.nativeEvent.data);
 		}
-	},
+	};
 
-	render() {
+
+    constructor(props) {
+    	super(props)
+        this.state = this._stateFromProps(props);
+    }
+
+    render() {
 		return <WheelCurvedPickerNative
 				{...this.props}
 				onValueChange={this._onValueChange}
@@ -76,19 +75,19 @@ var WheelCurvedPicker = React.createClass ({
 				textSize={this.state.textSize}
 				selectedIndex={parseInt(this.state.selectedIndex)} />;
 	}
-});
+}
 
-WheelCurvedPicker.Item = React.createClass({
-	propTypes: {
+WheelCurvedPicker.Item = class extends React.Component {
+    static propTypes = {
 		value: React.PropTypes.any, // string or integer basically
 		label: React.PropTypes.string,
-	},
+	};
 
-	render: function() {
+    render() {
 		// These items don't get rendered directly.
 		return null;
-	},
-});
+	}
+};
 
 var WheelCurvedPickerNative = requireNativeComponent('WheelCurvedPicker', WheelCurvedPicker);
 
